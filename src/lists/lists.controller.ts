@@ -10,6 +10,7 @@ import {
 import { ListsService } from './lists.service.js';
 import { CreateListDto } from './dto/create-list.dto.js';
 import { UpdateListDto } from './dto/update-list.dto.js';
+import { ListResponseDto } from './dto/list-response.dto.js';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Lists')
@@ -19,33 +20,41 @@ export class ListsController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new list.' })
-  create(@Body() createListDto: CreateListDto) {
-    return this.listsService.create(createListDto);
+  async create(@Body() createListDto: CreateListDto): Promise<ListResponseDto> {
+    const list = await this.listsService.create(createListDto);
+    return ListResponseDto.fromEntity(list);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all lists.' })
-  findAll() {
-    return this.listsService.findAll();
+  async findAll(): Promise<ListResponseDto[]> {
+    const lists = await this.listsService.findAll();
+    return lists.map((list) => ListResponseDto.fromEntity(list));
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a list by ID along with its items.' })
-  find(@Param('id') id: string) {
-    return this.listsService.find(id);
+  async find(@Param('id') id: string): Promise<ListResponseDto> {
+    const list = await this.listsService.find(id);
+    return ListResponseDto.fromEntity(list);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Edit a list by ID.' })
-  update(@Param('id') id: string, @Body() updateListDto: UpdateListDto) {
-    return this.listsService.update(id, updateListDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateListDto: UpdateListDto,
+  ): Promise<ListResponseDto> {
+    const list = await this.listsService.update(id, updateListDto);
+    return ListResponseDto.fromEntity(list);
   }
 
   @Delete(':id')
   @ApiOperation({
     summary: 'Delete a list by ID. Its items will be deleted too.',
   })
-  delete(@Param('id') id: string) {
-    return this.listsService.delete(id);
+  async delete(@Param('id') id: string): Promise<ListResponseDto> {
+    const list = await this.listsService.delete(id);
+    return ListResponseDto.fromEntity(list);
   }
 }

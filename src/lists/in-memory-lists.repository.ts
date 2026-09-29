@@ -1,13 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import {
-  ListChanges,
-  ListResponse,
-  ListsRepository,
-} from './lists.repository.js';
+import { List } from './entities/list.entity.js';
+import { ListChanges, ListsRepository } from './lists.repository.js';
 
 @Injectable()
 export class InMemoryListsRepository implements ListsRepository {
-  private firstList: ListResponse = {
+  private firstList: List = {
     id: 'mock-uuid-1234',
     title: 'My first list',
     createdAt: new Date(),
@@ -17,7 +14,7 @@ export class InMemoryListsRepository implements ListsRepository {
     ],
   };
 
-  private lists = new Map<string, ListResponse>([
+  private lists = new Map<string, List>([
     [this.firstList.id, this.firstList],
     [
       'mock-uuid-5678',
@@ -26,12 +23,12 @@ export class InMemoryListsRepository implements ListsRepository {
         title: 'My second list',
         createdAt: new Date(),
         items: [],
-      } satisfies ListResponse,
+      } satisfies List,
     ],
   ]);
 
-  async create(title: string): Promise<ListResponse> {
-    const newList: ListResponse = {
+  async create(title: string): Promise<List> {
+    const newList: List = {
       id: `mock-uuid-${Date.now()}`,
       title,
       createdAt: new Date(),
@@ -41,16 +38,16 @@ export class InMemoryListsRepository implements ListsRepository {
     return newList;
   }
 
-  async findById(id: string): Promise<ListResponse | null> {
+  async findById(id: string): Promise<List | null> {
     return this.lists.get(id) ?? null;
   }
 
-  async findAll(): Promise<ListResponse[]> {
+  async findAll(): Promise<List[]> {
     const iter = this.lists.values();
     return Array.from(iter);
   }
 
-  async update(id: string, changes: ListChanges): Promise<ListResponse | null> {
+  async update(id: string, changes: ListChanges): Promise<List | null> {
     const list = this.lists.get(id);
     if (list === undefined) {
       return null;
@@ -61,7 +58,7 @@ export class InMemoryListsRepository implements ListsRepository {
     return list;
   }
 
-  async delete(id: string): Promise<ListResponse | null> {
+  async delete(id: string): Promise<List | null> {
     const list = this.lists.get(id);
     if (list === undefined) {
       return null;

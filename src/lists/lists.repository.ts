@@ -1,23 +1,13 @@
-export interface ListResponse {
-  id: string;
-  title: string;
-  createdAt: Date;
-  items: Array<{
-    id: number;
-    name: string;
-    isCompleted: boolean;
-    position: number;
-  }>;
-}
+import type { List } from './entities/list.entity.js';
 
-export type ListChanges = Partial<Pick<ListResponse, 'title'>>;
+export type ListChanges = Partial<Pick<List, 'title'>>;
 
 export interface ListsRepository {
-  create(title: string): Promise<ListResponse>;
-  findById(listId: string): Promise<ListResponse | null>;
-  findAll(): Promise<ListResponse[]>;
-  update(id: string, changes: ListChanges): Promise<ListResponse | null>;
-  delete(id: string): Promise<ListResponse | null>;
+  create(title: string): Promise<List>;
+  findById(id: string): Promise<List | null>;
+  findAll(): Promise<List[]>;
+  update(id: string, changes: ListChanges): Promise<List | null>;
+  delete(id: string): Promise<List | null>;
 }
 
 export const LISTS_REPOSITORY = Symbol('LISTS_REPOSITORY');
