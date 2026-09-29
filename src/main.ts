@@ -1,30 +1,10 @@
-import { Logger, ValidationError, ValidationPipe } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module.js';
+import { configureApp } from './configure-app.js';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 const logger = new Logger('Bootstrap');
-
-/**
- * ValidationPipe that logs validation failures, then falls back to Nest's
- * default error handling (flattened messages, 400 status).
- */
-class LoggingValidationPipe extends ValidationPipe {
-  public override createExceptionFactory() {
-    const defaultFactory = super.createExceptionFactory();
-    return (errors: ValidationError[] = []) => {
-      const formattedErrors = errors.map((err) => ({
-        property: err.property,
-        failedValue: err.value,
-        constraints: err.constraints,
-      }));
-      logger.debug(
-        `Validation failed for request:\n${JSON.stringify(formattedErrors, null, 2)}`,
-      );
-      return defaultFactory(errors);
-    };
-  }
-}
 
 async function bootstrap() {
   // Create app
@@ -52,14 +32,8 @@ async function bootstrap() {
     },
   });
 
-  // Enable global DTO validation (failures are logged to terminal)
-  app.useGlobalPipes(
-    new LoggingValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-    }),
-  );
+  // Configure behavior shared with the e2e tests (validation, ...)
+  configureApp(app);
 
   // Listen to incoming connections
   const port = process.env.PORT ?? 3000;

@@ -1,19 +1,15 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { AppModule } from './../src/app.module.js';
-import { App } from 'supertest/types.js';
+import { createTestApp, type TestApp } from './helpers.js';
 
 describe('AppController (e2e)', () => {
-  let app: INestApplication<App>;
+  let app: TestApp;
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+    app = await createTestApp();
+  });
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
+  afterEach(async () => {
+    await app.close();
   });
 
   it('/ (GET)', () => {
@@ -21,9 +17,5 @@ describe('AppController (e2e)', () => {
       .get('/')
       .expect(302)
       .expect('Found. Redirecting to /docs');
-  });
-
-  afterEach(async () => {
-    await app.close();
   });
 });

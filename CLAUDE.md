@@ -1,5 +1,13 @@
 # Claude
 
+## Adapt Your Response To Your Audience
+
+This is a pet project by someone learning TypeScript and NestJS
+and relatively new to backend development (even if a seasoned software engineer).
+
+Have this in mind in your response: advice for standard techniques, guide to improve
+the person as much as (if not more than) the code.
+
 ## Format Code
 
 After each batch of changes, format the code with `npm run format`.
