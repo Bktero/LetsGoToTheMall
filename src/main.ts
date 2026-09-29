@@ -28,7 +28,12 @@ class LoggingValidationPipe extends ValidationPipe {
 
 async function bootstrap() {
   // Create app
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    routeConflictPolicy: {
+      duplicate: 'error',
+      shadow: 'error',
+    },
+  });
 
   // Configure OpenAPI
   const config = new DocumentBuilder()
