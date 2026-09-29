@@ -1,7 +1,7 @@
-import { Item } from './item.entity.js';
+import { Item } from '../items/entities/item.entity.js';
 
 export class List {
-  id: string;
+  listId: number;
   title: string;
   createdAt: Date;
   items: Item[];

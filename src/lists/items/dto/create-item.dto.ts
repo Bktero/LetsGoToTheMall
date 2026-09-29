@@ -1,16 +1,16 @@
-import { Transform } from 'class-transformer';
 import { IsString, MaxLength, MinLength } from 'class-validator';
+import { Transform } from 'class-transformer';
 
-export class CreateListDto {
+export class CreateItemDto {
   /**
-   * The title of the list.
+   * The name of the item.
    *
    * Leading and trailing whitespaces are trimmed.
-   * @example "Leroy Merlin"
+   * @example "Gorgonzola"
    */
   @IsString()
   @MinLength(1)
-  @MaxLength(50)
+  @MaxLength(150)
   @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
-  title: string;
+  name: string;
 }

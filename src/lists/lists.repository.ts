@@ -4,10 +4,10 @@ export type ListChanges = Partial<Pick<List, 'title'>>;
 
 export interface ListsRepository {
   create(title: string): Promise<List>;
-  findById(id: string): Promise<List | null>;
+  findById(listId: number): Promise<List | null>;
   findAll(): Promise<List[]>;
-  update(id: string, changes: ListChanges): Promise<List | null>;
-  delete(id: string): Promise<List | null>;
+  update(listId: number, changes: ListChanges): Promise<List | null>;
+  remove(listId: number): Promise<List | null>;
 }
 
 export const LISTS_REPOSITORY = Symbol('LISTS_REPOSITORY');

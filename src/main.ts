@@ -41,8 +41,8 @@ async function bootstrap() {
     .setDescription(
       'An API to manage shopping lists (so we can go to the mall, today!)',
     )
-    .addTag('Lists', 'Shopping lists management')
-    .addTag('Items', 'List item management')
+    .addTag('Lists', 'Manage lists')
+    .addTag('Items', 'Manage items inside a list')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

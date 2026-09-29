@@ -1,8 +1,7 @@
 import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateListDto } from './dto/create-list.dto.js';
 import type { List } from './entities/list.entity.js';
-import type { ListsRepository } from './lists.repository.js';
-import { LISTS_REPOSITORY } from './lists.repository.js';
+import { LISTS_REPOSITORY, type ListsRepository } from './lists.repository.js';
 import { UpdateListDto } from './dto/update-list.dto.js';
 
 @Injectable()
@@ -22,17 +21,17 @@ export class ListsService {
   }
 
   async findAll(): Promise<List[]> {
-    this.logger.debug('Finding lists...');
+    this.logger.debug('Finding all lists...');
     const lists = await this.repository.findAll();
     this.logger.debug('Found lists:', lists);
     return lists;
   }
 
-  async find(id: string): Promise<List> {
-    this.logger.debug(`Finding list ${id}...`);
-    const list = await this.repository.findById(id);
+  async findOne(listId: number): Promise<List> {
+    this.logger.debug(`Finding list ${listId}...`);
+    const list = await this.repository.findById(listId);
     if (list === null) {
-      const message = `List with ID ${id} was not found`;
+      const message = `List ${listId} was not found`;
       this.logger.warn(message);
       throw new NotFoundException(message);
     }
@@ -40,27 +39,27 @@ export class ListsService {
     return list;
   }
 
-  async update(id: string, updateListDto: UpdateListDto): Promise<List> {
-    this.logger.debug(`Updating list ${id} to`, updateListDto, '...');
-    const list = await this.repository.update(id, updateListDto);
+  async update(listId: number, updateListDto: UpdateListDto): Promise<List> {
+    this.logger.debug(`Updating list ${listId} to`, updateListDto, '...');
+    const list = await this.repository.update(listId, updateListDto);
     if (list === null) {
-      const message = `Cannot update list with ID ${id} because it was not found`;
+      const message = `Cannot update list ${listId} because it was not found`;
       this.logger.warn(message);
       throw new NotFoundException(message);
     }
-    this.logger.debug(`Updated list ${id}`);
+    this.logger.debug(`Updated list ${listId}`);
     return list;
   }
 
-  async delete(id: string): Promise<List> {
-    this.logger.debug(`Deleting list ${id}...`);
-    const list = await this.repository.delete(id);
+  async remove(listId: number): Promise<List> {
+    this.logger.debug(`Removing list ${listId}...`);
+    const list = await this.repository.remove(listId);
     if (list === null) {
-      const message = `Cannot delete list with ID ${id} because it was not found`;
+      const message = `Cannot remove list ${listId} because it was not found`;
       this.logger.warn(message);
       throw new NotFoundException(message);
     }
-    this.logger.debug(`Deleted list ${id}`);
+    this.logger.debug(`Removed list ${listId}`);
     return list;
   }
 }

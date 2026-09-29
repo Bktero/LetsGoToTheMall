@@ -19,7 +19,7 @@ export class ListsController {
   constructor(private readonly listsService: ListsService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a new list.' })
+  @ApiOperation({ summary: 'Create a new empty list.' })
   async create(@Body() createListDto: CreateListDto): Promise<ListResponseDto> {
     const list = await this.listsService.create(createListDto);
     return ListResponseDto.fromEntity(list);
@@ -32,29 +32,29 @@ export class ListsController {
     return lists.map((list) => ListResponseDto.fromEntity(list));
   }
 
-  @Get(':id')
+  @Get(':listId')
   @ApiOperation({ summary: 'Get a list by ID along with its items.' })
-  async find(@Param('id') id: string): Promise<ListResponseDto> {
-    const list = await this.listsService.find(id);
+  async findOne(@Param('listId') listId: number): Promise<ListResponseDto> {
+    const list = await this.listsService.findOne(listId);
     return ListResponseDto.fromEntity(list);
   }
 
-  @Patch(':id')
+  @Patch(':listId')
   @ApiOperation({ summary: 'Edit a list by ID.' })
   async update(
-    @Param('id') id: string,
+    @Param('listId') listId: number,
     @Body() updateListDto: UpdateListDto,
   ): Promise<ListResponseDto> {
-    const list = await this.listsService.update(id, updateListDto);
+    const list = await this.listsService.update(listId, updateListDto);
     return ListResponseDto.fromEntity(list);
   }
 
-  @Delete(':id')
+  @Delete(':listId')
   @ApiOperation({
-    summary: 'Delete a list by ID. Its items will be deleted too.',
+    summary: 'Remove a list by ID. Its items will be removed too.',
   })
-  async delete(@Param('id') id: string): Promise<ListResponseDto> {
-    const list = await this.listsService.delete(id);
+  async remove(@Param('listId') listId: number): Promise<ListResponseDto> {
+    const list = await this.listsService.remove(listId);
     return ListResponseDto.fromEntity(list);
   }
 }
