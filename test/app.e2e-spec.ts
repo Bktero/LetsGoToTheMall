@@ -19,8 +19,8 @@ describe('AppController (e2e)', () => {
   it('/ (GET)', () => {
     return request(app.getHttpServer())
       .get('/')
-      .expect(200)
-      .expect("Let's go to the mall!");
+      .expect(302)
+      .expect('Found. Redirecting to /docs');
   });
 
   afterEach(async () => {

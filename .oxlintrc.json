@@ -3,7 +3,8 @@
   "rules": {
     "prefer-const": "error",
     "typescript/no-explicit-any": "off",
-    "typescript/no-floating-promises": "error"
+    "typescript/no-floating-promises": "error",
+    "typescript/explicit-module-boundary-types": "error"
   },
   "env": {
     "node": true
