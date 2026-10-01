@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -20,7 +21,7 @@ export class ItemsController {
   @Post()
   @ApiOperation({ summary: 'Create a new item in the give list.' })
   async create(
-    @Param('listId') listId: number,
+    @Param('listId', ParseIntPipe) listId: number,
     @Body() createItemDto: CreateItemDto,
   ): Promise<ItemResponseDto> {
     const item = await this.itemsService.create(listId, createItemDto);
@@ -29,7 +30,9 @@ export class ItemsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all items in a list.' })
-  async findAll(@Param('listId') listId: number): Promise<ItemResponseDto[]> {
+  async findAll(
+    @Param('listId', ParseIntPipe) listId: number,
+  ): Promise<ItemResponseDto[]> {
     const items = await this.itemsService.findAll(listId);
     return items.map((item) => ItemResponseDto.fromEntity(item));
   }
@@ -37,8 +40,8 @@ export class ItemsController {
   @Get(':itemId')
   @ApiOperation({ summary: 'Get an item by ID in a list.' })
   async findOne(
-    @Param('listId') listId: number,
-    @Param('itemId') itemId: number,
+    @Param('listId', ParseIntPipe) listId: number,
+    @Param('itemId', ParseIntPipe) itemId: number,
   ): Promise<ItemResponseDto> {
     const item = await this.itemsService.findOne(listId, itemId);
     return ItemResponseDto.fromEntity(item);
@@ -47,8 +50,8 @@ export class ItemsController {
   @Patch(':itemId')
   @ApiOperation({ summary: 'Edit an item by ID in a list.' })
   async update(
-    @Param('listId') listId: number,
-    @Param('itemId') itemId: number,
+    @Param('listId', ParseIntPipe) listId: number,
+    @Param('itemId', ParseIntPipe) itemId: number,
     @Body() updateItemDto: UpdateItemDto,
   ): Promise<ItemResponseDto> {
     const item = await this.itemsService.update(listId, itemId, updateItemDto);
@@ -58,8 +61,8 @@ export class ItemsController {
   @Delete(':itemId')
   @ApiOperation({ summary: 'Remove an item by ID in a list.' })
   async remove(
-    @Param('listId') listId: number,
-    @Param('itemId') itemId: number,
+    @Param('listId', ParseIntPipe) listId: number,
+    @Param('itemId', ParseIntPipe) itemId: number,
   ): Promise<ItemResponseDto> {
     const item = await this.itemsService.remove(listId, itemId);
     return ItemResponseDto.fromEntity(item);

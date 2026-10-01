@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -34,7 +35,9 @@ export class ListsController {
 
   @Get(':listId')
   @ApiOperation({ summary: 'Get a list by ID along with its items.' })
-  async findOne(@Param('listId') listId: number): Promise<ListResponseDto> {
+  async findOne(
+    @Param('listId', ParseIntPipe) listId: number,
+  ): Promise<ListResponseDto> {
     const list = await this.listsService.findOne(listId);
     return ListResponseDto.fromEntity(list);
   }
@@ -42,7 +45,7 @@ export class ListsController {
   @Patch(':listId')
   @ApiOperation({ summary: 'Edit a list by ID.' })
   async update(
-    @Param('listId') listId: number,
+    @Param('listId', ParseIntPipe) listId: number,
     @Body() updateListDto: UpdateListDto,
   ): Promise<ListResponseDto> {
     const list = await this.listsService.update(listId, updateListDto);
@@ -53,7 +56,9 @@ export class ListsController {
   @ApiOperation({
     summary: 'Remove a list by ID. Its items will be removed too.',
   })
-  async remove(@Param('listId') listId: number): Promise<ListResponseDto> {
+  async remove(
+    @Param('listId', ParseIntPipe) listId: number,
+  ): Promise<ListResponseDto> {
     const list = await this.listsService.remove(listId);
     return ListResponseDto.fromEntity(list);
   }
