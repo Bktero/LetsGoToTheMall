@@ -1,5 +1,4 @@
 import { List } from '../entities/list.entity.js';
-import { ItemResponseDto } from '../items/dto/item-response.dto.js';
 
 export class ListResponseDto {
   /**
@@ -22,14 +21,14 @@ export class ListResponseDto {
   /**
    * The items of the list.
    */
-  items: ItemResponseDto[];
+  itemCount: number;
 
   static fromEntity(list: List): ListResponseDto {
     return {
       listId: list.listId,
       title: list.title,
       createdAt: list.createdAt,
-      items: list.items.map((item) => ItemResponseDto.fromEntity(item)),
+      itemCount: list.items.length,
     };
   }
 }
