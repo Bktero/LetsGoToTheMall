@@ -1,6 +1,8 @@
 # Let's Go To The Mall
 
-"Today!"
+> "Today!"
+
+A pet project to learn TypeScript and NestJS.
 
 ## Useful Commands
 
