@@ -4,7 +4,7 @@ import { ApiResponse } from '@nestjs/swagger';
 @Controller()
 export class AppController {
   @Get()
-  @Redirect('/docs')
+  @Redirect('/api/docs')
   @ApiResponse({
     status: 302,
     description: "Redirects to the project's documentation",

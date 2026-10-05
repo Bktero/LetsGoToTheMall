@@ -15,6 +15,11 @@ async function bootstrap() {
     },
   });
 
+  // Configure behavior shared with the e2e tests (validation, prefix, ...)
+  // This must run before creating the OpenAPI document, because the document
+  // reads the routes (and the global prefix) at the time it is created.
+  configureApp(app);
+
   // Configure OpenAPI
   const config = new DocumentBuilder()
     .setTitle("Let's Go To The Mall API")
@@ -27,13 +32,11 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document, {
+    useGlobalPrefix: true,
     swaggerOptions: {
       tryItOutEnabled: true,
     },
   });
-
-  // Configure behavior shared with the e2e tests (validation, ...)
-  configureApp(app);
 
   // Listen to incoming connections
   const port = process.env.PORT ?? 3000;
@@ -46,7 +49,7 @@ async function bootstrap() {
     url.hostname = 'localhost';
   }
   logger.log(`Application running on ${url.origin}`);
-  logger.log(`Swagger available on ${url.origin}/docs`);
+  logger.log(`Swagger available on ${url.origin}/api/docs`);
 }
 
 await bootstrap();

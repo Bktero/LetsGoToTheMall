@@ -20,7 +20,7 @@ describe('Lists (e2e)', () => {
   describe('POST /lists', () => {
     it('creates an empty list and returns it', async () => {
       const response = await request(app.getHttpServer())
-        .post('/lists')
+        .post('/api/lists')
         .send({ title: 'Leroy Merlin' })
         .expect(201);
 
@@ -38,7 +38,7 @@ describe('Lists (e2e)', () => {
 
     it('trims leading and trailing whitespaces from the title', async () => {
       const response = await request(app.getHttpServer())
-        .post('/lists')
+        .post('/api/lists')
         .send({ title: '  Leroy Merlin  ' })
         .expect(201);
 
@@ -50,7 +50,7 @@ describe('Lists (e2e)', () => {
       { name: '50 characters', title: 'a'.repeat(50) },
     ])('accepts a title of $name', async ({ title }) => {
       const response = await request(app.getHttpServer())
-        .post('/lists')
+        .post('/api/lists')
         .send({ title })
         .expect(201);
 
@@ -59,11 +59,11 @@ describe('Lists (e2e)', () => {
 
     it('gives a different ID to each list', async () => {
       const first = await request(app.getHttpServer())
-        .post('/lists')
+        .post('/api/lists')
         .send({ title: 'First' })
         .expect(201);
       const second = await request(app.getHttpServer())
-        .post('/lists')
+        .post('/api/lists')
         .send({ title: 'Second' })
         .expect(201);
 
@@ -82,18 +82,21 @@ describe('Lists (e2e)', () => {
       { name: 'null as title', body: { title: null } },
       { name: 'an unknown field', body: { title: 'x', foo: 1 } },
     ])('rejects $name with 400', async ({ body }) => {
-      await request(app.getHttpServer()).post('/lists').send(body).expect(400);
+      await request(app.getHttpServer())
+        .post('/api/lists')
+        .send(body)
+        .expect(400);
     });
 
     it('rejects a request without a body with 400', async () => {
-      await request(app.getHttpServer()).post('/lists').expect(400);
+      await request(app.getHttpServer()).post('/api/lists').expect(400);
     });
   });
 
   describe('GET /lists', () => {
     it('returns an empty array when there are no lists', async () => {
       const response = await request(app.getHttpServer())
-        .get('/lists')
+        .get('/api/lists')
         .expect(200);
 
       expect(response.body).toEqual([]);
@@ -104,7 +107,7 @@ describe('Lists (e2e)', () => {
       const second = await createList(app, 'Grocery store');
 
       const response = await request(app.getHttpServer())
-        .get('/lists')
+        .get('/api/lists')
         .expect(200);
 
       // Order is not part of the contract, so it is not asserted
@@ -121,7 +124,7 @@ describe('Lists (e2e)', () => {
       await createItem(app, double.listId, 'Bandages');
 
       const response = await request(app.getHttpServer())
-        .get('/lists')
+        .get('/api/lists')
         .expect(200);
 
       // Different counts, so mixing them up between lists would be noticed
@@ -141,7 +144,7 @@ describe('Lists (e2e)', () => {
       const created = await createList(app, 'Leroy Merlin');
 
       const found = await request(app.getHttpServer())
-        .get(`/lists/${created.listId}`)
+        .get(`/api/lists/${created.listId}`)
         .expect(200);
 
       expect(found.body).toEqual(created);
@@ -153,18 +156,18 @@ describe('Lists (e2e)', () => {
       await createList(app, 'Pharmacy');
 
       const found = await request(app.getHttpServer())
-        .get(`/lists/${wanted.listId}`)
+        .get(`/api/lists/${wanted.listId}`)
         .expect(200);
 
       expect(found.body).toEqual(wanted);
     });
 
     it('returns 404 for a list that does not exist', async () => {
-      await request(app.getHttpServer()).get('/lists/9999').expect(404);
+      await request(app.getHttpServer()).get('/api/lists/9999').expect(404);
     });
 
     it('returns 400 when the ID is not an integer', async () => {
-      await request(app.getHttpServer()).get('/lists/abc').expect(400);
+      await request(app.getHttpServer()).get('/api/lists/abc').expect(400);
     });
   });
 
@@ -173,7 +176,7 @@ describe('Lists (e2e)', () => {
       const created = await createList(app, 'Leroy Merlin');
 
       const response = await request(app.getHttpServer())
-        .patch(`/lists/${created.listId}`)
+        .patch(`/api/lists/${created.listId}`)
         .send({ title: 'Grocery store' })
         .expect(200);
 
@@ -184,12 +187,12 @@ describe('Lists (e2e)', () => {
     it('persists the change', async () => {
       const created = await createList(app, 'Leroy Merlin');
       await request(app.getHttpServer())
-        .patch(`/lists/${created.listId}`)
+        .patch(`/api/lists/${created.listId}`)
         .send({ title: 'Grocery store' })
         .expect(200);
 
       const found = await request(app.getHttpServer())
-        .get(`/lists/${created.listId}`)
+        .get(`/api/lists/${created.listId}`)
         .expect(200);
 
       expect(found.body).toEqual({ ...created, title: 'Grocery store' });
@@ -200,12 +203,12 @@ describe('Lists (e2e)', () => {
       const other = await createList(app, 'Pharmacy');
 
       await request(app.getHttpServer())
-        .patch(`/lists/${target.listId}`)
+        .patch(`/api/lists/${target.listId}`)
         .send({ title: 'Grocery store' })
         .expect(200);
 
       const found = await request(app.getHttpServer())
-        .get(`/lists/${other.listId}`)
+        .get(`/api/lists/${other.listId}`)
         .expect(200);
       expect(found.body).toEqual(other);
     });
@@ -214,7 +217,7 @@ describe('Lists (e2e)', () => {
       const created = await createList(app, 'Leroy Merlin');
 
       const response = await request(app.getHttpServer())
-        .patch(`/lists/${created.listId}`)
+        .patch(`/api/lists/${created.listId}`)
         .send({ title: '  Grocery store  ' })
         .expect(200);
 
@@ -228,7 +231,7 @@ describe('Lists (e2e)', () => {
       const created = await createList(app, 'Leroy Merlin');
 
       const response = await request(app.getHttpServer())
-        .patch(`/lists/${created.listId}`)
+        .patch(`/api/lists/${created.listId}`)
         .send({ title })
         .expect(200);
 
@@ -242,7 +245,7 @@ describe('Lists (e2e)', () => {
       const created = await createList(app, 'Leroy Merlin');
 
       const response = await request(app.getHttpServer())
-        .patch(`/lists/${created.listId}`)
+        .patch(`/api/lists/${created.listId}`)
         .send(body)
         .expect(200);
 
@@ -264,21 +267,21 @@ describe('Lists (e2e)', () => {
       const created = await createList(app, 'Leroy Merlin');
 
       await request(app.getHttpServer())
-        .patch(`/lists/${created.listId}`)
+        .patch(`/api/lists/${created.listId}`)
         .send(body)
         .expect(400);
     });
 
     it('returns 404 for a list that does not exist', async () => {
       await request(app.getHttpServer())
-        .patch('/lists/9999')
+        .patch('/api/lists/9999')
         .send({ title: 'Grocery store' })
         .expect(404);
     });
 
     it('returns 400 when the ID is not an integer', async () => {
       await request(app.getHttpServer())
-        .patch('/lists/abc')
+        .patch('/api/lists/abc')
         .send({ title: 'Grocery store' })
         .expect(400);
     });
@@ -289,7 +292,7 @@ describe('Lists (e2e)', () => {
       const created = await createList(app, 'Leroy Merlin');
 
       const response = await request(app.getHttpServer())
-        .delete(`/lists/${created.listId}`)
+        .delete(`/api/lists/${created.listId}`)
         .expect(200);
 
       expect(response.body).toEqual(created);
@@ -299,11 +302,11 @@ describe('Lists (e2e)', () => {
       const created = await createList(app, 'Leroy Merlin');
 
       await request(app.getHttpServer())
-        .delete(`/lists/${created.listId}`)
+        .delete(`/api/lists/${created.listId}`)
         .expect(200);
 
       await request(app.getHttpServer())
-        .get(`/lists/${created.listId}`)
+        .get(`/api/lists/${created.listId}`)
         .expect(404);
     });
 
@@ -312,14 +315,14 @@ describe('Lists (e2e)', () => {
       const item = await createItem(app, created.listId, 'Gorgonzola');
 
       await request(app.getHttpServer())
-        .delete(`/lists/${created.listId}`)
+        .delete(`/api/lists/${created.listId}`)
         .expect(200);
 
       await request(app.getHttpServer())
-        .get(`/lists/${created.listId}/items`)
+        .get(`/api/lists/${created.listId}/items`)
         .expect(404);
       await request(app.getHttpServer())
-        .get(`/lists/${created.listId}/items/${item.itemId}`)
+        .get(`/api/lists/${created.listId}/items/${item.itemId}`)
         .expect(404);
     });
 
@@ -329,11 +332,11 @@ describe('Lists (e2e)', () => {
       const third = await createList(app, 'Pharmacy');
 
       await request(app.getHttpServer())
-        .delete(`/lists/${target.listId}`)
+        .delete(`/api/lists/${target.listId}`)
         .expect(200);
 
       const response = await request(app.getHttpServer())
-        .get('/lists')
+        .get('/api/lists')
         .expect(200);
       expect(response.body).toHaveLength(2);
       expect(response.body).toEqual(expect.arrayContaining([first, third]));
@@ -343,20 +346,20 @@ describe('Lists (e2e)', () => {
       const created = await createList(app, 'Leroy Merlin');
 
       await request(app.getHttpServer())
-        .delete(`/lists/${created.listId}`)
+        .delete(`/api/lists/${created.listId}`)
         .expect(200);
 
       await request(app.getHttpServer())
-        .delete(`/lists/${created.listId}`)
+        .delete(`/api/lists/${created.listId}`)
         .expect(404);
     });
 
     it('returns 404 for a list that does not exist', async () => {
-      await request(app.getHttpServer()).delete('/lists/9999').expect(404);
+      await request(app.getHttpServer()).delete('/api/lists/9999').expect(404);
     });
 
     it('returns 400 when the ID is not an integer', async () => {
-      await request(app.getHttpServer()).delete('/lists/abc').expect(400);
+      await request(app.getHttpServer()).delete('/api/lists/abc').expect(400);
     });
   });
 });

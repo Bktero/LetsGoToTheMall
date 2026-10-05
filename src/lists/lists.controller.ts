@@ -34,7 +34,7 @@ export class ListsController {
   }
 
   @Get(':listId')
-  @ApiOperation({ summary: 'Get a list by ID along with its items.' })
+  @ApiOperation({ summary: 'Get a list by ID.' })
   async findOne(
     @Param('listId', ParseIntPipe) listId: number,
   ): Promise<ListResponseDto> {

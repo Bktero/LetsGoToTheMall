@@ -51,7 +51,7 @@ export async function createList(
   title: string,
 ): Promise<ListJson> {
   const response = await request(app.getHttpServer())
-    .post('/lists')
+    .post('/api/lists')
     .send({ title })
     .expect(201);
   return response.body as ListJson;
@@ -69,7 +69,7 @@ export async function pickUpItem(
   itemId: number,
 ): Promise<ItemJson> {
   const response = await request(app.getHttpServer())
-    .patch(`/lists/${listId}/items/${itemId}`)
+    .patch(`/api/lists/${listId}/items/${itemId}`)
     .send({ pickedUp: true })
     .expect(200);
   return response.body as ItemJson;
@@ -86,7 +86,7 @@ export async function createItem(
   name: string,
 ): Promise<ItemJson> {
   const response = await request(app.getHttpServer())
-    .post(`/lists/${listId}/items`)
+    .post(`/api/lists/${listId}/items`)
     .send({ name })
     .expect(201);
   return response.body as ItemJson;

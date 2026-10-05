@@ -1,8 +1,8 @@
 import {
+  type INestApplication,
   Logger,
   ValidationError,
   ValidationPipe,
-  type INestApplication,
 } from '@nestjs/common';
 
 const logger = new Logger('ValidationPipe');
@@ -42,4 +42,8 @@ export function configureApp(app: INestApplication): void {
       transform: true,
     }),
   );
+
+  // Serve the API under /api, but keep the root route (redirect to the docs)
+  // at the bare server URL
+  app.setGlobalPrefix('api', { exclude: ['/'] });
 }

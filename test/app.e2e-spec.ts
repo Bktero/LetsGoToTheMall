@@ -16,6 +16,6 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/')
       .expect(302)
-      .expect('Found. Redirecting to /docs');
+      .expect('Found. Redirecting to /api/docs');
   });
 });

@@ -25,7 +25,7 @@ describe('Items (e2e)', () => {
       const list = await createList(app, 'Leroy Merlin');
 
       const response = await request(app.getHttpServer())
-        .post(`/lists/${list.listId}/items`)
+        .post(`/api/lists/${list.listId}/items`)
         .send({ name: 'Gorgonzola' })
         .expect(201);
 
@@ -44,7 +44,7 @@ describe('Items (e2e)', () => {
       const list = await createList(app, 'Leroy Merlin');
 
       const response = await request(app.getHttpServer())
-        .post(`/lists/${list.listId}/items`)
+        .post(`/api/lists/${list.listId}/items`)
         .send({ name: '  Gorgonzola  ' })
         .expect(201);
 
@@ -58,7 +58,7 @@ describe('Items (e2e)', () => {
       const list = await createList(app, 'Leroy Merlin');
 
       const response = await request(app.getHttpServer())
-        .post(`/lists/${list.listId}/items`)
+        .post(`/api/lists/${list.listId}/items`)
         .send({ name: itemName })
         .expect(201);
 
@@ -79,7 +79,7 @@ describe('Items (e2e)', () => {
       const created = await createItem(app, list.listId, 'Gorgonzola');
 
       const found = await request(app.getHttpServer())
-        .get(`/lists/${list.listId}/items/${created.itemId}`)
+        .get(`/api/lists/${list.listId}/items/${created.itemId}`)
         .expect(200);
 
       expect(found.body).toEqual(created);
@@ -94,10 +94,10 @@ describe('Items (e2e)', () => {
       await createItem(app, other.listId, 'Aspirin');
 
       const targetAfter = await request(app.getHttpServer())
-        .get(`/lists/${target.listId}`)
+        .get(`/api/lists/${target.listId}`)
         .expect(200);
       const otherAfter = await request(app.getHttpServer())
-        .get(`/lists/${other.listId}`)
+        .get(`/api/lists/${other.listId}`)
         .expect(200);
 
       expect((targetAfter.body as ListJson).itemCount).toBe(2);
@@ -119,7 +119,7 @@ describe('Items (e2e)', () => {
       const list = await createList(app, 'Leroy Merlin');
 
       await request(app.getHttpServer())
-        .post(`/lists/${list.listId}/items`)
+        .post(`/api/lists/${list.listId}/items`)
         .send(body)
         .expect(400);
     });
@@ -128,20 +128,20 @@ describe('Items (e2e)', () => {
       const list = await createList(app, 'Leroy Merlin');
 
       await request(app.getHttpServer())
-        .post(`/lists/${list.listId}/items`)
+        .post(`/api/lists/${list.listId}/items`)
         .expect(400);
     });
 
     it('returns 404 when the list does not exist', async () => {
       await request(app.getHttpServer())
-        .post('/lists/9999/items')
+        .post('/api/lists/9999/items')
         .send({ name: 'Gorgonzola' })
         .expect(404);
     });
 
     it('returns 400 when the list ID is not an integer', async () => {
       await request(app.getHttpServer())
-        .post('/lists/abc/items')
+        .post('/api/lists/abc/items')
         .send({ name: 'Gorgonzola' })
         .expect(400);
     });
@@ -152,7 +152,7 @@ describe('Items (e2e)', () => {
       const list = await createList(app, 'Leroy Merlin');
 
       const response = await request(app.getHttpServer())
-        .get(`/lists/${list.listId}/items`)
+        .get(`/api/lists/${list.listId}/items`)
         .expect(200);
 
       expect(response.body).toEqual([]);
@@ -166,7 +166,7 @@ describe('Items (e2e)', () => {
       const third = await createItem(app, list.listId, 'Aspirin');
 
       const response = await request(app.getHttpServer())
-        .get(`/lists/${list.listId}/items`)
+        .get(`/api/lists/${list.listId}/items`)
         .expect(200);
 
       expect(response.body).toEqual([first, second, third]);
@@ -179,7 +179,7 @@ describe('Items (e2e)', () => {
       const pickedUp = await pickUpItem(app, list.listId, toPickUp.itemId);
 
       const response = await request(app.getHttpServer())
-        .get(`/lists/${list.listId}/items`)
+        .get(`/api/lists/${list.listId}/items`)
         .expect(200);
 
       expect(response.body).toEqual([notPickedUp, pickedUp]);
@@ -193,10 +193,10 @@ describe('Items (e2e)', () => {
       const otherItem = await createItem(app, otherList.listId, 'Aspirin');
 
       const response = await request(app.getHttpServer())
-        .get(`/lists/${list.listId}/items`)
+        .get(`/api/lists/${list.listId}/items`)
         .expect(200);
       const otherResponse = await request(app.getHttpServer())
-        .get(`/lists/${otherList.listId}/items`)
+        .get(`/api/lists/${otherList.listId}/items`)
         .expect(200);
 
       expect(response.body).toEqual([item]);
@@ -204,11 +204,15 @@ describe('Items (e2e)', () => {
     });
 
     it('returns 404 when the list does not exist', async () => {
-      await request(app.getHttpServer()).get('/lists/9999/items').expect(404);
+      await request(app.getHttpServer())
+        .get('/api/lists/9999/items')
+        .expect(404);
     });
 
     it('returns 400 when the list ID is not an integer', async () => {
-      await request(app.getHttpServer()).get('/lists/abc/items').expect(400);
+      await request(app.getHttpServer())
+        .get('/api/lists/abc/items')
+        .expect(400);
     });
   });
 
@@ -218,7 +222,7 @@ describe('Items (e2e)', () => {
       const created = await createItem(app, list.listId, 'Gorgonzola');
 
       const found = await request(app.getHttpServer())
-        .get(`/lists/${list.listId}/items/${created.itemId}`)
+        .get(`/api/lists/${list.listId}/items/${created.itemId}`)
         .expect(200);
 
       expect(found.body).toEqual(created);
@@ -231,7 +235,7 @@ describe('Items (e2e)', () => {
       await createItem(app, list.listId, 'Aspirin');
 
       const found = await request(app.getHttpServer())
-        .get(`/lists/${list.listId}/items/${wanted.itemId}`)
+        .get(`/api/lists/${list.listId}/items/${wanted.itemId}`)
         .expect(200);
 
       expect(found.body).toEqual(wanted);
@@ -243,7 +247,7 @@ describe('Items (e2e)', () => {
       const pickedUp = await pickUpItem(app, list.listId, created.itemId);
 
       const found = await request(app.getHttpServer())
-        .get(`/lists/${list.listId}/items/${created.itemId}`)
+        .get(`/api/lists/${list.listId}/items/${created.itemId}`)
         .expect(200);
 
       expect(found.body).toEqual(pickedUp);
@@ -256,7 +260,7 @@ describe('Items (e2e)', () => {
       const item = await createItem(app, list.listId, 'Gorgonzola');
 
       await request(app.getHttpServer())
-        .get(`/lists/${otherList.listId}/items/${item.itemId}`)
+        .get(`/api/lists/${otherList.listId}/items/${item.itemId}`)
         .expect(404);
     });
 
@@ -264,17 +268,19 @@ describe('Items (e2e)', () => {
       const list = await createList(app, 'Leroy Merlin');
 
       await request(app.getHttpServer())
-        .get(`/lists/${list.listId}/items/9999`)
+        .get(`/api/lists/${list.listId}/items/9999`)
         .expect(404);
     });
 
     it('returns 404 when the list does not exist', async () => {
-      await request(app.getHttpServer()).get('/lists/9999/items/1').expect(404);
+      await request(app.getHttpServer())
+        .get('/api/lists/9999/items/1')
+        .expect(404);
     });
 
     it.each([
-      { name: 'list', path: '/lists/abc/items/1' },
-      { name: 'item', path: '/lists/1/items/abc' },
+      { name: 'list', path: '/api/lists/abc/items/1' },
+      { name: 'item', path: '/api/lists/1/items/abc' },
     ])('returns 400 when the $name ID is not an integer', async ({ path }) => {
       await request(app.getHttpServer()).get(path).expect(400);
     });
@@ -286,7 +292,7 @@ describe('Items (e2e)', () => {
       const created = await createItem(app, list.listId, 'Gorgonzola');
 
       const response = await request(app.getHttpServer())
-        .patch(`/lists/${list.listId}/items/${created.itemId}`)
+        .patch(`/api/lists/${list.listId}/items/${created.itemId}`)
         .send({ name: 'Bread' })
         .expect(200);
 
@@ -298,12 +304,12 @@ describe('Items (e2e)', () => {
       const list = await createList(app, 'Leroy Merlin');
       const created = await createItem(app, list.listId, 'Gorgonzola');
       await request(app.getHttpServer())
-        .patch(`/lists/${list.listId}/items/${created.itemId}`)
+        .patch(`/api/lists/${list.listId}/items/${created.itemId}`)
         .send({ name: 'Bread' })
         .expect(200);
 
       const found = await request(app.getHttpServer())
-        .get(`/lists/${list.listId}/items/${created.itemId}`)
+        .get(`/api/lists/${list.listId}/items/${created.itemId}`)
         .expect(200);
 
       expect(found.body).toEqual({ ...created, name: 'Bread' });
@@ -314,7 +320,7 @@ describe('Items (e2e)', () => {
       const created = await createItem(app, list.listId, 'Gorgonzola');
 
       const response = await request(app.getHttpServer())
-        .patch(`/lists/${list.listId}/items/${created.itemId}`)
+        .patch(`/api/lists/${list.listId}/items/${created.itemId}`)
         .send({ name: '  Bread  ' })
         .expect(200);
 
@@ -329,7 +335,7 @@ describe('Items (e2e)', () => {
       const created = await createItem(app, list.listId, 'Gorgonzola');
 
       const response = await request(app.getHttpServer())
-        .patch(`/lists/${list.listId}/items/${created.itemId}`)
+        .patch(`/api/lists/${list.listId}/items/${created.itemId}`)
         .send({ name: itemName })
         .expect(200);
 
@@ -341,7 +347,7 @@ describe('Items (e2e)', () => {
       const created = await createItem(app, list.listId, 'Gorgonzola');
 
       const response = await request(app.getHttpServer())
-        .patch(`/lists/${list.listId}/items/${created.itemId}`)
+        .patch(`/api/lists/${list.listId}/items/${created.itemId}`)
         .send({ pickedUp: true })
         .expect(200);
 
@@ -353,7 +359,7 @@ describe('Items (e2e)', () => {
         'Invalid Date',
       );
       const found = await request(app.getHttpServer())
-        .get(`/lists/${list.listId}/items/${created.itemId}`)
+        .get(`/api/lists/${list.listId}/items/${created.itemId}`)
         .expect(200);
       expect(found.body).toEqual(response.body);
     });
@@ -364,7 +370,7 @@ describe('Items (e2e)', () => {
       await pickUpItem(app, list.listId, created.itemId);
 
       const response = await request(app.getHttpServer())
-        .patch(`/lists/${list.listId}/items/${created.itemId}`)
+        .patch(`/api/lists/${list.listId}/items/${created.itemId}`)
         .send({ pickedUp: false })
         .expect(200);
 
@@ -380,13 +386,13 @@ describe('Items (e2e)', () => {
 
       vi.setSystemTime(new Date('2030-01-01T10:00:00.000Z'));
       const first = await request(app.getHttpServer())
-        .patch(`/lists/${list.listId}/items/${created.itemId}`)
+        .patch(`/api/lists/${list.listId}/items/${created.itemId}`)
         .send({ pickedUp: true })
         .expect(200);
 
       vi.setSystemTime(new Date('2030-01-01T11:00:00.000Z'));
       const second = await request(app.getHttpServer())
-        .patch(`/lists/${list.listId}/items/${created.itemId}`)
+        .patch(`/api/lists/${list.listId}/items/${created.itemId}`)
         .send({ pickedUp: true })
         .expect(200);
 
@@ -400,7 +406,7 @@ describe('Items (e2e)', () => {
       const created = await createItem(app, list.listId, 'Gorgonzola');
 
       const response = await request(app.getHttpServer())
-        .patch(`/lists/${list.listId}/items/${created.itemId}`)
+        .patch(`/api/lists/${list.listId}/items/${created.itemId}`)
         .send({ name: 'Bread', pickedUp: true })
         .expect(200);
 
@@ -418,12 +424,12 @@ describe('Items (e2e)', () => {
       const third = await createItem(app, list.listId, 'Aspirin');
 
       await request(app.getHttpServer())
-        .patch(`/lists/${list.listId}/items/${second.itemId}`)
+        .patch(`/api/lists/${list.listId}/items/${second.itemId}`)
         .send({ name: 'Baguette' })
         .expect(200);
 
       const response = await request(app.getHttpServer())
-        .get(`/lists/${list.listId}/items`)
+        .get(`/api/lists/${list.listId}/items`)
         .expect(200);
       expect(response.body).toEqual([
         first,
@@ -440,7 +446,7 @@ describe('Items (e2e)', () => {
       const created = await createItem(app, list.listId, 'Gorgonzola');
 
       const response = await request(app.getHttpServer())
-        .patch(`/lists/${list.listId}/items/${created.itemId}`)
+        .patch(`/api/lists/${list.listId}/items/${created.itemId}`)
         .send(body)
         .expect(200);
 
@@ -465,7 +471,7 @@ describe('Items (e2e)', () => {
       const created = await createItem(app, list.listId, 'Gorgonzola');
 
       await request(app.getHttpServer())
-        .patch(`/lists/${list.listId}/items/${created.itemId}`)
+        .patch(`/api/lists/${list.listId}/items/${created.itemId}`)
         .send(body)
         .expect(400);
     });
@@ -474,14 +480,14 @@ describe('Items (e2e)', () => {
       const list = await createList(app, 'Leroy Merlin');
 
       await request(app.getHttpServer())
-        .patch(`/lists/${list.listId}/items/9999`)
+        .patch(`/api/lists/${list.listId}/items/9999`)
         .send({ name: 'Bread' })
         .expect(404);
     });
 
     it('returns 404 when the list does not exist', async () => {
       await request(app.getHttpServer())
-        .patch('/lists/9999/items/1')
+        .patch('/api/lists/9999/items/1')
         .send({ name: 'Bread' })
         .expect(404);
     });
@@ -492,19 +498,19 @@ describe('Items (e2e)', () => {
       const created = await createItem(app, list.listId, 'Gorgonzola');
 
       await request(app.getHttpServer())
-        .patch(`/lists/${otherList.listId}/items/${created.itemId}`)
+        .patch(`/api/lists/${otherList.listId}/items/${created.itemId}`)
         .send({ name: 'Bread' })
         .expect(404);
 
       const found = await request(app.getHttpServer())
-        .get(`/lists/${list.listId}/items/${created.itemId}`)
+        .get(`/api/lists/${list.listId}/items/${created.itemId}`)
         .expect(200);
       expect(found.body).toEqual(created);
     });
 
     it.each([
-      { name: 'list', path: '/lists/abc/items/1' },
-      { name: 'item', path: '/lists/1/items/abc' },
+      { name: 'list', path: '/api/lists/abc/items/1' },
+      { name: 'item', path: '/api/lists/1/items/abc' },
     ])('returns 400 when the $name ID is not an integer', async ({ path }) => {
       await request(app.getHttpServer())
         .patch(path)
@@ -519,7 +525,7 @@ describe('Items (e2e)', () => {
       const created = await createItem(app, list.listId, 'Gorgonzola');
 
       const response = await request(app.getHttpServer())
-        .delete(`/lists/${list.listId}/items/${created.itemId}`)
+        .delete(`/api/lists/${list.listId}/items/${created.itemId}`)
         .expect(200);
 
       expect(response.body).toEqual(created);
@@ -529,11 +535,11 @@ describe('Items (e2e)', () => {
       const list = await createList(app, 'Leroy Merlin');
       const created = await createItem(app, list.listId, 'Gorgonzola');
       await request(app.getHttpServer())
-        .delete(`/lists/${list.listId}/items/${created.itemId}`)
+        .delete(`/api/lists/${list.listId}/items/${created.itemId}`)
         .expect(200);
 
       await request(app.getHttpServer())
-        .get(`/lists/${list.listId}/items/${created.itemId}`)
+        .get(`/api/lists/${list.listId}/items/${created.itemId}`)
         .expect(404);
     });
 
@@ -544,11 +550,11 @@ describe('Items (e2e)', () => {
       const third = await createItem(app, list.listId, 'Aspirin');
 
       await request(app.getHttpServer())
-        .delete(`/lists/${list.listId}/items/${second.itemId}`)
+        .delete(`/api/lists/${list.listId}/items/${second.itemId}`)
         .expect(200);
 
       const response = await request(app.getHttpServer())
-        .get(`/lists/${list.listId}/items`)
+        .get(`/api/lists/${list.listId}/items`)
         .expect(200);
       expect(response.body).toEqual([first, third]);
     });
@@ -557,11 +563,11 @@ describe('Items (e2e)', () => {
       const list = await createList(app, 'Leroy Merlin');
       const created = await createItem(app, list.listId, 'Gorgonzola');
       await request(app.getHttpServer())
-        .delete(`/lists/${list.listId}/items/${created.itemId}`)
+        .delete(`/api/lists/${list.listId}/items/${created.itemId}`)
         .expect(200);
 
       await request(app.getHttpServer())
-        .delete(`/lists/${list.listId}/items/${created.itemId}`)
+        .delete(`/api/lists/${list.listId}/items/${created.itemId}`)
         .expect(404);
     });
 
@@ -573,14 +579,14 @@ describe('Items (e2e)', () => {
       await createItem(app, other.listId, 'Aspirin');
 
       await request(app.getHttpServer())
-        .delete(`/lists/${target.listId}/items/${toDelete.itemId}`)
+        .delete(`/api/lists/${target.listId}/items/${toDelete.itemId}`)
         .expect(200);
 
       const targetAfter = await request(app.getHttpServer())
-        .get(`/lists/${target.listId}`)
+        .get(`/api/lists/${target.listId}`)
         .expect(200);
       const otherAfter = await request(app.getHttpServer())
-        .get(`/lists/${other.listId}`)
+        .get(`/api/lists/${other.listId}`)
         .expect(200);
       expect((targetAfter.body as ListJson).itemCount).toBe(1);
       expect((otherAfter.body as ListJson).itemCount).toBe(1);
@@ -592,11 +598,11 @@ describe('Items (e2e)', () => {
       const created = await createItem(app, list.listId, 'Gorgonzola');
 
       await request(app.getHttpServer())
-        .delete(`/lists/${otherList.listId}/items/${created.itemId}`)
+        .delete(`/api/lists/${otherList.listId}/items/${created.itemId}`)
         .expect(404);
 
       const found = await request(app.getHttpServer())
-        .get(`/lists/${list.listId}/items/${created.itemId}`)
+        .get(`/api/lists/${list.listId}/items/${created.itemId}`)
         .expect(200);
       expect(found.body).toEqual(created);
     });
@@ -605,19 +611,19 @@ describe('Items (e2e)', () => {
       const list = await createList(app, 'Leroy Merlin');
 
       await request(app.getHttpServer())
-        .delete(`/lists/${list.listId}/items/9999`)
+        .delete(`/api/lists/${list.listId}/items/9999`)
         .expect(404);
     });
 
     it('returns 404 when the list does not exist', async () => {
       await request(app.getHttpServer())
-        .delete('/lists/9999/items/1')
+        .delete('/api/lists/9999/items/1')
         .expect(404);
     });
 
     it.each([
-      { name: 'list', path: '/lists/abc/items/1' },
-      { name: 'item', path: '/lists/1/items/abc' },
+      { name: 'list', path: '/api/lists/abc/items/1' },
+      { name: 'item', path: '/api/lists/1/items/abc' },
     ])('returns 400 when the $name ID is not an integer', async ({ path }) => {
       await request(app.getHttpServer()).delete(path).expect(400);
     });
