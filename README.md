@@ -4,6 +4,10 @@
 
 A pet project to learn TypeScript and NestJS.
 
+## Environment Variables
+
+- `LGTTM_SEED_DATA`: set to `true` to seed lists with items when the application starts.
+
 ## Useful Commands
 
 See `justfile`.

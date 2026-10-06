@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "rules": {
+    "object-shorthand": "error",
     "prefer-const": "error",
     "typescript/no-explicit-any": "off",
     "typescript/no-floating-promises": "error",
