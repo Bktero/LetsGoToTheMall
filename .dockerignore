@@ -1,0 +1,24 @@
+# Rebuilt inside the image
+node_modules
+dist
+*.tsbuildinfo
+
+# Local data and temporary files
+working
+.tmp
+coverage
+**/*.log
+
+# Secrets
+.env
+.env.*
+
+# Not needed to build the app
+.git
+.idea
+.vscode
+.claude
+test
+Dockerfile
+.dockerignore
+compose.yaml

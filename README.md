@@ -45,3 +45,14 @@ For automatic extraction, configure plugin in `nest-cli.json`:
   }
 }
 ```
+
+## Docker
+
+```bash
+docker compose build
+docker compose push
+
+docker compose pull
+docker compose up -d
+docker compose log -g
+```

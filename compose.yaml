@@ -1,0 +1,14 @@
+services:
+  app:
+    build: .
+    image: bktero/mall
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      LGTTM_DATABASE_PATH: /data/lgttm.sqlite
+    volumes:
+      - mall-data:/data
+
+volumes:
+  mall-data:
