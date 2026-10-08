@@ -1,9 +1,9 @@
 import { Global, Module } from '@nestjs/common';
-import { InMemoryModule } from './in-memory/in-memory.module.js';
+import { SqliteModule } from './sqlite/sqlite.module.js';
 
 @Module({
-  imports: [InMemoryModule],
-  exports: [InMemoryModule],
+  imports: [SqliteModule],
+  exports: [SqliteModule],
 })
 @Global()
 export class PersistenceModule {}

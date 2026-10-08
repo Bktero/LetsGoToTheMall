@@ -20,6 +20,11 @@ async function bootstrap() {
   // reads the routes (and the global prefix) at the time it is created.
   configureApp(app);
 
+  // Call the shutdown hooks (e.g. close the database) on SIGINT and SIGTERM.
+  // This is not in configureApp() because each e2e test app would add its own
+  // process listeners, and the tests already call the hooks with app.close().
+  app.enableShutdownHooks();
+
   // Configure OpenAPI
   const config = new DocumentBuilder()
     .setTitle("Let's Go To The Mall API")

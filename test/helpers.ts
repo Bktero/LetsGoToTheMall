@@ -26,7 +26,7 @@ export interface ItemJson {
 /**
  * Create and start an app configured like the real one.
  *
- * Each app has its own in-memory store, so calling this in a `beforeEach`
+ * Each app creates an in-memory database, so calling this in a `beforeEach`
  * means tests can't affect each other.
  */
 export async function createTestApp(): Promise<TestApp> {

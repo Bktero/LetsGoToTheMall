@@ -42,6 +42,7 @@ export class SeedService implements OnApplicationBootstrap {
   ) {
     if (await this.listExists(title)) {
       // Don't seed the same list again
+      this.logger.warn(`List ${title} already exists, don't seed it again`);
       return;
     }
 
