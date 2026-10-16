@@ -90,3 +90,8 @@ docker compose pull
 docker compose up -d
 docker compose log -f
 ```
+
+## TODO
+
+Use SSE when several users work on the same list.
+See https://devkamal.medium.com/real-time-communication-made-simple-building-server-sent-events-sse-with-nestjs-f6a8f5715d18
