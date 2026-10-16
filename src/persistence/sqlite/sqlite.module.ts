@@ -43,6 +43,7 @@ export class SqliteModule implements OnApplicationShutdown {
 
 function createDatabase(): MyDatabase {
   const logger = new Logger(SqliteModule.name);
+
   const path = process.env.LGTTM_DATABASE_PATH ?? 'working/lgttm.sqlite';
   if (path === ':memory:') {
     logger.warn(
@@ -51,9 +52,11 @@ function createDatabase(): MyDatabase {
   } else {
     mkdirSync(dirname(path), { recursive: true });
   }
+
   logger.log(`Connecting to database: ${path}...`);
   const conn = new Database(path);
   conn.pragma('foreign_keys = ON');
+
   const db = drizzle(conn, { schema });
   migrate(db, { migrationsFolder: 'drizzle' });
   return db;
