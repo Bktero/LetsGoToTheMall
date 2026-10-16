@@ -6,7 +6,10 @@ A pet project to learn TypeScript and NestJS.
 
 ## Environment Variables
 
-- `LGTTM_SEED_DATA`: set to `true` to seed lists with items when the application starts.
+- `LGTTM_SEED_DATA`: set to `true` to seed lists with items when the application starts. Defaults to `false`.
+- `LGTTM_DATABASE_PATH`: the path to the SQLite database. Defaults to `working/lgttm.sqlite`.
+
+- `NEST_DEBUG`: set this variable to enable debug logs from the NestJS framework.
 
 ## Useful Commands
 
