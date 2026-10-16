@@ -28,3 +28,9 @@ output (e.g. `/docs-json`) instead of asserting from memory.
 ## Prefer local temp directory to system directory
 
 Instead of using `/tmp` to create temporary file, prefer `.tmp` to avoid prompting for authorization.
+
+## Don't Chain Shell Commands
+
+Run commands one at a time instead of chaining them with `&&`, `;` or `|`. Do not use command substitution
+(`$(...)` or backticks) either. Compound commands often trigger a permission
+prompt. If a single command is in the allow list, it runs without a prompt.
